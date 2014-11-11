@@ -28,6 +28,7 @@ def init_prey(n):
 def init_output_array(n):
     output = np.zeros(n, dtype='float64, uint32')
     output.dtype.names = ('time', 'index')
+    output['time'] = np.inf
     return output
 
 class deplete2d:
@@ -145,6 +146,16 @@ class deplete2d:
     def get_output(self):
         t = np.sort(self.output[0:self.outp]['time'])
         return (t, self.n_prey - np.arange(self.outp))
+
+    def get_prey(self, t):
+        """get prey at time t
+        """
+        i_dead = self.output[self.output['time'] <= t]['index']
+        i_alive = np.setdiff1d(self.prey_original['index'], i_dead,
+                assume_unique=True)
+        return self.prey_original[i_alive]
+        
+
         
         
 def brownianwalk(sim, T=100, sigma=0.1):
